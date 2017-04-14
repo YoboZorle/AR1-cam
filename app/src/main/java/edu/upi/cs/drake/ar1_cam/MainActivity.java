@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.hardware.Camera;
 import android.util.Log;
+import android.util.StringBuilderPrinter;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -29,6 +30,12 @@ public class MainActivity extends AppCompatActivity {
     float pitchAngle;
     float rollAngle;
 
+    //accelerometer variables
+    int accelerometerSensor;
+    float xAxis;
+    float yAxis;
+    float zAxis;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,11 +49,14 @@ public class MainActivity extends AppCompatActivity {
         viewHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        accelerometerSensor = Sensor.TYPE_ACCELEROMETER;
         orientationSensor = Sensor.TYPE_ORIENTATION;
         sensorManager.registerListener(sensorEventListener,
+                sensorManager.getDefaultSensor(accelerometerSensor),
+                sensorManager.SENSOR_DELAY_NORMAL);
+        sensorManager.registerListener(sensorEventListener,
             sensorManager.getDefaultSensor(orientationSensor),
-            SensorManager.SENSOR_DELAY_NORMAL
-        );
+            SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     @Override
@@ -54,6 +64,8 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         sensorManager.registerListener(sensorEventListener,
                 sensorManager.getDefaultSensor(orientationSensor), SensorManager.SENSOR_DELAY_NORMAL);
+        sensorManager.registerListener(sensorEventListener,
+                sensorManager.getDefaultSensor(accelerometerSensor), SensorManager.SENSOR_DELAY_NORMAL);
         camera = Camera.open();
     }
 
@@ -127,6 +139,14 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(Tag, "Heading: " + String.valueOf(headingAngle));
                 Log.d(Tag, "Pitch: " + String.valueOf(pitchAngle));
                 Log.d(Tag, "Roll" + String.valueOf(rollAngle));
+            }else if(sensorEvent.sensor.getType() == Sensor.TYPE_ACCELEROMETER){
+                xAxis = sensorEvent.values[0];
+                yAxis = sensorEvent.values[1];
+                zAxis = sensorEvent.values[2];
+
+                Log.d(Tag, "xAxis: " + String.valueOf(xAxis));
+                Log.d(Tag, "yAxis: " + String.valueOf(yAxis));
+                Log.d(Tag, "zAxis: " + String.valueOf(zAxis));
             }
         }
 
