@@ -4,6 +4,9 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.hardware.Camera;
@@ -36,6 +39,12 @@ public class MainActivity extends AppCompatActivity {
     float yAxis;
     float zAxis;
 
+    //GPS variables
+    LocationManager locationManager;
+    double longitude;
+    double latitude;
+    double altitude;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,11 +66,14 @@ public class MainActivity extends AppCompatActivity {
         sensorManager.registerListener(sensorEventListener,
             sensorManager.getDefaultSensor(orientationSensor),
             SensorManager.SENSOR_DELAY_NORMAL);
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 2, locationListener);
     }
 
     @Override
     public void onResume(){
         super.onResume();
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 2, locationListener);
         sensorManager.registerListener(sensorEventListener,
                 sensorManager.getDefaultSensor(orientationSensor), SensorManager.SENSOR_DELAY_NORMAL);
         sensorManager.registerListener(sensorEventListener,
@@ -75,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
         if(inPreview){
             camera.stopPreview();
         }
-
+        locationManager.removeUpdates(locationListener);
         sensorManager.unregisterListener(sensorEventListener);
         camera.release();
         camera = null;
@@ -152,6 +164,34 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+        }
+    };
+
+    LocationListener locationListener = new LocationListener() {
+        @Override
+        public void onLocationChanged(Location location) {
+            longitude = location.getLongitude();
+            latitude = location.getLatitude();
+            altitude = location.getAltitude();
+
+            Log.d(Tag, "Longitude: " + longitude);
+            Log.d(Tag, "Latitude: " + latitude);
+            Log.d(Tag, "Altitude: " + altitude);
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
 
         }
     };
