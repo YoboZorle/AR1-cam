@@ -14,6 +14,7 @@ import android.util.Log;
 import android.util.StringBuilderPrinter;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -45,10 +46,31 @@ public class MainActivity extends AppCompatActivity {
     double latitude;
     double altitude;
 
+    //textviews
+    TextView xAxisValue;
+    TextView yAxisValue;
+    TextView zAxisValue;
+    TextView headingValue;
+    TextView pitchValue;
+    TextView rollValue;
+    TextView altitudeValue;
+    TextView latitudeValue;
+    TextView longitudeValue;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        xAxisValue = (TextView) findViewById(R.id.xAxisValue);
+        yAxisValue = (TextView) findViewById(R.id.yAxisValue);
+        zAxisValue = (TextView) findViewById(R.id.zAxisValue);
+        headingValue = (TextView) findViewById(R.id.headingValue);
+        pitchValue = (TextView) findViewById(R.id.pitchValue);
+        rollValue = (TextView) findViewById(R.id.rollValue);
+        altitudeValue = (TextView) findViewById(R.id.altitudeValue);
+        longitudeValue = (TextView) findViewById(R.id.longitudeValue);
+        latitudeValue = (TextView) findViewById(R.id.latitudeValue);
 
         inPreview = false;
 
@@ -151,6 +173,11 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(Tag, "Heading: " + String.valueOf(headingAngle));
                 Log.d(Tag, "Pitch: " + String.valueOf(pitchAngle));
                 Log.d(Tag, "Roll" + String.valueOf(rollAngle));
+
+                headingValue.setText(String.valueOf(headingAngle));
+                pitchValue.setText(String.valueOf(pitchAngle));
+                rollValue.setText(String.valueOf(rollAngle));
+
             }else if(sensorEvent.sensor.getType() == Sensor.TYPE_ACCELEROMETER){
                 xAxis = sensorEvent.values[0];
                 yAxis = sensorEvent.values[1];
@@ -159,6 +186,10 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(Tag, "xAxis: " + String.valueOf(xAxis));
                 Log.d(Tag, "yAxis: " + String.valueOf(yAxis));
                 Log.d(Tag, "zAxis: " + String.valueOf(zAxis));
+
+                xAxisValue.setText(""+xAxis);
+                yAxisValue.setText(""+yAxis);
+                zAxisValue.setText(""+zAxis);
             }
         }
 
@@ -178,6 +209,10 @@ public class MainActivity extends AppCompatActivity {
             Log.d(Tag, "Longitude: " + longitude);
             Log.d(Tag, "Latitude: " + latitude);
             Log.d(Tag, "Altitude: " + altitude);
+
+            latitudeValue.setText(String.valueOf(latitude));
+            longitudeValue.setText(String.valueOf(longitude));
+            altitudeValue.setText(String.valueOf(altitude));
         }
 
         @Override
